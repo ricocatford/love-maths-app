@@ -7,12 +7,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 checkAnswer();
             } else {
                 let gameType = this.getAttribute("data-type");
-                alert(`You clicked ${gameType}`);
+                runGame(gameType);
             }
         });
     }
 
-    runGame("addition");
+    runGame("multiply");
 });
 
 /**
@@ -25,6 +25,10 @@ function runGame(gameType) {
 
     if (gameType === "addition") {
         displayAdditionQuestion(num1, num2);
+    } else if (gameType === "multiply") {
+        displayMultiplyQuestion(num1, num2);
+    } else if (gameType === "substract") {
+        displaySubstractQuestion(num1, num2);
     } else {
         alert(`Unknown game type: ${gameType}`);
         throw(`Unknown game type: ${gameType}. Aborting!`)
@@ -41,9 +45,9 @@ function checkAnswer() {
     let isCorrect = userAnswer === calculatedAnswer[0];
 
     if (isCorrect) {
-        alert("Hey! You got it right!!!");
+        incrementScore();
     } else {
-        alert(`Awww... You answered ${userAnswer} and the correct answer is ${calculatedAnswer[0]}`)
+        incrementWrongAnswer();
     }
 
     runGame(calculatedAnswer[1]);
@@ -61,18 +65,30 @@ function calculateCorrectAnswer() {
 
     if (operator === "+") {
         return [operand1 + operand2, "addition"];
+    } else if (operator === "x") {
+        return [operand1 * operand2, "multiply"];
+    } else if (operator === "-") {
+        return [operand1 - operand2, "substract"]
     } else {
         alert(`Unimplemented operator ${operator}`);
         throw(`Unimplemented operator ${operator}. Aborting!`);
     }
 }
 
+/**
+ * Increments the score by 1 if the user's answer is right.
+ */
 function incrementScore() {
-
+    let oldScore = parseInt(document.getElementById("score").innerText);
+    document.getElementById("score").innerText = ++oldScore; // We use ++oldScore to update oldScore right before printing it to the DOM and not otherwise.
 }
 
+/**
+ * Increments the Incorrect answers score by 1 if the user's answer is wrong.
+ */
 function incrementWrongAnswer() {
-
+    let oldScore = parseInt(document.getElementById("incorrect").innerText);
+    document.getElementById("incorrect").innerText = ++oldScore;
 }
 
 function displayAdditionQuestion(operand1, operand2) {
@@ -81,10 +97,14 @@ function displayAdditionQuestion(operand1, operand2) {
     document.getElementById("operator").textContent = "+";
 }
 
-function displaySubstractQuestion() {
-    
+function displaySubstractQuestion(operand1, operand2) {
+    document.getElementById("operand1").textContent = operand1 > operand2 ? operand1 : operand2;
+    document.getElementById("operand2").textContent = operand2 < operand1 ? operand2 : operand1;
+    document.getElementById("operator").textContent = "-";
 }
 
-function displayMultiplyQuestion() {
-    
+function displayMultiplyQuestion(operand1, operand2) {
+    document.getElementById("operand1").textContent = operand1;
+    document.getElementById("operand2").textContent = operand2;
+    document.getElementById("operator").textContent = "x";
 }
